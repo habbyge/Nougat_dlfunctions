@@ -35,21 +35,21 @@ struct ctx {
     off_t bias;
 };
 
-int fake_dlclose(void *handle) 
-{
+int fake_dlclose(void *handle)  {
     if(handle) {	
-	struct ctx *ctx = (struct ctx *) handle;
-	if(ctx->dynsym) free(ctx->dynsym);	/* we're saving dynsym and dynstr */
-	if(ctx->dynstr) free(ctx->dynstr);	/* from library file just in case */
-	free(ctx);	
+		struct ctx *ctx = (struct ctx *) handle;
+		if(ctx->dynsym) 
+			free(ctx->dynsym);	/* we're saving dynsym and dynstr */
+		if (ctx->dynstr) 
+			free(ctx->dynstr);	/* from library file just in case */
+		free(ctx);	
     }	
     return 0;	
 }
 
 /* flags are ignored */
 
-void *fake_dlopen(const char *libpath, int flags) 
-{
+void* fake_dlopen(const char* libpath, int flags) {
     FILE *maps;
     char buff[256];	
     struct ctx *ctx = 0;
@@ -129,7 +129,9 @@ void *fake_dlopen(const char *libpath, int flags)
 	munmap(elf, size);
 	elf = 0;
 
-	if(!ctx->dynstr || !ctx->dynsym) fatal("dynamic sections not found in %s", libpath);
+	if (!ctx->dynstr || !ctx->dynsym) {
+		fatal("dynamic sections not found in %s", libpath);
+	}
 
 #undef fatal
 
@@ -144,8 +146,7 @@ void *fake_dlopen(const char *libpath, int flags)
     return 0;
 }
 
-void *fake_dlsym(void *handle, const char *name) 
-{
+void* fake_dlsym(void* handle, const char* name) {
     int k;
     struct ctx *ctx = (struct ctx *) handle;
     Elf_Sym *sym = (Elf_Sym *) ctx->dynsym;

@@ -113,8 +113,7 @@ void ft_quit(struct ctx *c)
 /* convert glyph dimension to screen pixels */
 #define glyph2screen(A) ((A) * ctx->fsize * c->dpi)/(ctx->face->units_per_EM * 72)
 
-int ft_set_face(struct ctx *c, const char *new_face, int new_size)
-{
+int ft_set_face(struct ctx *c, const char *new_face, int new_size) {
     struct  ft_ctx *ctx = c->fctx;
     if(ctx->face) ctx->FT_Done_Face(ctx->face);
     if(ctx->FT_New_Face(ctx->library, new_face, 0, &ctx->face) != 0) {
